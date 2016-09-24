@@ -1,0 +1,2363 @@
+\documentclass[12pt]{article}
+
+\title{CMSC420 Project - Fall 2016\\ Draft Version 1.1\\ Due max(syllabus, submit server)}
+\date{Last Modified \today}
+\author{The BIG 420 Project\footnote{Participation in this project may
+    prove HAZARDOUS to your health. Unfortunately, failure to
+    participate early and often will definitely adversely affect your
+    GPA.  Take my advice. Start now, because you're already behind. If
+    you don't believe me, ask anyone who took  CMSC 420 with Dr.
+    Hugue.}\\Part~1 will be due on max(syllabus, submit server) at 23:59 hours\\(plus 48 hour grace period)}
+
+\usepackage{fullpage}
+\usepackage{calc}
+\usepackage[colorlinks=true,urlcolor=blue,letterpaper,bookmarks]{hyperref}
+\usepackage{html}
+
+\newenvironment{Description}
+   {\begin{list}{}{\let\makelabel\Descriptionlabel
+%      \setlength\labelwidth{10pt}%
+      \setlength\leftmargin{\labelwidth+\labelsep}
+      \setlength\itemindent{-0.3em}}}%
+   {\end{list}}
+
+\newcommand*{\Descriptionlabel}[1]{%
+  \parbox[b]{\labelwidth}
+  {\makebox[0pt][l]{\textbf{#1}}\\}
+  \hfill}
+
+% %
+%  \usepackage[colorlinks=true,urlcolor=blue,letterpaper]{hyperref}
+%   replaced  with line below:  mmh 2/8/2005
+% %
+
+
+
+%%% end preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+\maketitle
+\bigskip
+
+%%% provides hyperlinked contents in PDF
+\begin{latexonly}
+  \tableofcontents
+\end{latexonly}
+
+\section{Introduction and General Overview}
+
+%%%%%  parameters:   
+%%%%% 1) Descending asciibetical
+%%%%%        names list
+%%%%%        tie breaker in nearest neighbor
+%%%%%        default    for start/end   in PM black nodes
+%%%%%  
+%%%%% 2) 2D to 1D  Y  Dominates X
+%%%%%     list cities treemap comparator
+%%%%%    
+%%%%% 3) O radius includes  center city
+%%%%%    in range search,  radius of zero reports city at coords
+%%%%%    or returns error free
+%%%%%      
+%%%%%  
+%%%%% 4)  White NOde Coordinates---on hold   
+%%%%%  
+%%%%%  
+%%%%% 5) DupCityCoord error  dominates DupName error  
+%%%%%    in detecting duplicates, coords fail first
+%%%%%  
+%%%%%  1. City names are printed in descending asciibetical order
+%%%%%  2. List cities, when sorting by coordinate, should print out cities in
+%%%%%  ascending Y value order. If two cites have the same Y value, then the
+%%%%%  city with the smallest X value should come first.
+%%%%%  3. For rangeCities, if the radius is zero but a city exists at the
+%%%%%  point in question, print out that city instead of returning an error.
+%%%%%  4. Add an X and Y attribute to the printMXQuadtree white nodes
+%%%%%  (previously only gray and black attributes had an X and Y value).
+%%%%%  5. Swap the duplicateCityCoordinates error to make it have higher
+%%%%%  priority than duplicateCityName error.
+
+%%%%% 2/14/16
+%%%%%
+%%%%%  1. Removed from createCity()  any ordering based on radius inclusions
+%%%%%     and restored no dupicate names, no duplicate coordinates.
+%%%%%  2. Added edict that AVL tree be adopted, not rolled, to save time.
+%%%%%
+%%%%%
+%%%%%
+%%%%%
+
+
+
+%%%%% 6/7/16
+%%%%% 
+%%%%% 1. Fixed height definition for AVL tree
+%%%%% 2. Added suggestion of using comparators to get AVL descending order
+%%%%%
+
+
+Welcome to the Fall, 2016,  edition of Dr. Hugue's CMSC~420 
+project.
+A substantial portion of your grade in this course will be determined
+by your performance on several programming assignments (collectively
+referred to as 
+\emph{The Project}.  The time commitment required on your part varies from
+student to student, but expect to spend a good bit of time planning as
+well as coding and debugging each part of the projects.
+
+The primary motivation of this project is to give you 
+the experience of building portions of a real world application using
+ the data
+structures and algorithms that we will study during the semester.
+This semester's long term goal
+is to mimic some of the functionality of MapQuest \footnote{Copyright
+1996-2016 MapQuest.com, Inc ("MapQuest"). All rights reserved. See
+www.mapquest.com for more information.}. By the end of this course, if 
+you have worked hard and done your job well,  you will
+have a program that is capable of drawing maps
+of a general area and supporting the following functions:
+displaying a highlighted route;
+ calculating shortest routes (based on time or 
+distance);
+ generating driving instructions (complete with correct ``turn left and then go straight
+for 2.34 miles'' annotations); determining closest points of interest,
+ such as all of the ``Internet Cafes'' within a 20~mile radius of College
+ Park, MD;
+ and just generally impressing friends and family with its
+awesome ability to tell you how to get to where you want to be in both
+plain text and picture form.
+And, even if things don't go smoothly, you will have had the opportunity to
+ think about data structures, and programming in general, in new and
+interesting ways.
+
+
+The project comprises three  parts,  which build upon one another to produce
+the desired features of an on-line mapping system. Part 1 will
+establish a custom database, including insertion, deletion, and search
+functions using elements of the JAVA API, and, of course establishing
+standard notation for inputs and outputs, based on XML.
+In later parts, 
+you will be replacing elements of the JAVA API with
+custom code based on structures other  than those
+used in JAVA. MeeshQuest functions will be added with each
+part, resulting in a very powerful piece of software at the end of the semester.
+
+
+\subsection{Warning and Encouragement}
+This is a large project that has been carefully designed over several years
+to provide a challenge to every level of programmer in the class. Each part
+will take the full time you have been allotted to complete. (In all honesty,
+many of you will feel that we have not given you enough time--yes, even
+you hot shots.) But don't panic! There are plenty of ways to complete each
+part on time for full credit.
+
+Here's the secret: start early and start by spending a few days sketching
+out what objects/classes you will use and how these objects/classes will
+fit together. You are encouraged to discuss your ideas with classmates (but
+don't write any code together!) and to bring your design ideas to the TAs
+during office hours, or on the newsgroup,
+for comments/suggestions. The most successful students have spent time
+carefully planning their projects. Those students who do not devote any
+time to design are the one most likely to receive a poor grade.
+
+
+
+Many of you have probably been able to sit down and do many of the projects
+in the lower level classes in an evening or two with little or no
+planning. Well the honeymoon is over. If you don't start early and spend
+time carefully planning each part, you will be very hard pressed to get a
+fully working solution.  Good design and testing, not
+Mountain-Dew-Code-A-Thons the night before the due date, is the key to
+surviving 420. 
+
+Despite the quantity of work required to  implement these
+projects, most students, when finished with CMSC420, agree that the
+experience made them better programmers.  The rest of your projects this
+semester will be implemented in the Java programming language.  It is
+possible to go from having almost no Java knowledge to adding
+`professional-level Java developer' to your resume in a single
+semester by a single course.  Not only will you learn to exploit the
+Java API data structures you'll be implementing, we'll be providing
+some tips, tricks, and general advice about how to write not only good
+Java code but how to develop good object-oriented design in general.
+So, don't let the programming component of the course scare you off;
+it will be worth it in the long run--we promise.
+
+
+Each part will typically involve two major components: coding a
+functional data structure and actually putting it to use.  For
+example, in the past we have had students implement a Fibonacci heap,
+and use it as the priority queue component of Dijkstra's algorithm.
+The first project will require that you write what has come to be
+known as a \emph{command} \emph{parser},
+ which will allow us to pass input to your
+program as a series of commands (e.g., ``add (x,y) to your B+ tree'').
+Each part will introduce a new set of commands you will need to
+handle, so updating your command parser will be another component of
+each of your projects. 
+
+\subsection{Freezing the Specification}
+In the real world, as well as in Dr.~Purtilo's~435 course and others, the
+specification can be changed at any time, including the night before
+the project is due. In CMSC~420, that is not the case. By rule, the
+specification has to be frozen no earlier than one week before it is
+due. This is to allow those of you who really don't get it to screw up
+even more by waiting until the spec is frozen. Just kidding! It is to reassure
+ those of you who freak out because everything that Dr. Hugue does looks totally
+disorganized that evaluation opportunities in this
+course are well regulated and rule based. By rule, we have to abide by
+the letter of the spec in grading your project. If we don't, you get
+the points back. By Rule.
+
+Note
+that updates to submission instructions and output syntax are exempt
+from this freezing rule. However, typically no modification can occur
+within the last 24 hours before the due date/time without your
+receiving an extension. Thus, when it comes to grades, you can count
+on us to be equal opportunity abusers. 
+
+
+\subsection{Giving and Seeking Help--OK within Reason}
+
+Unlike many other courses at this university, we in CMSC420 believe
+that you should be free to talk at length about the project with each
+other.  The algorithms you'll be writing to implement data structures
+are not secrets; in most cases you will have pseudocode or even actual
+code available to you through many resources.  The CS Forum
+is mandatory reading in this course and is the
+perfect place to ask questions and get answers about the project,
+Java, the data structures, the meaning of life, etc.  
+
+ Do note, however, that even though our policy
+is more lenient than other professors in their courses, we do take
+academic honesty quite seriously and students have received XFs in
+this course for blatantly copying other students' code.  It's one
+thing to develop an algorithm with another student---it's another to
+copy and paste your buddy's code.  We will still be doing the standard
+code comparisons not only between your code but also the code of
+students of semesters past (yes, we keep it).  So don't try any funny
+stuff, and you'll be fine.  The general rule of thumb: when in doubt,
+cite your resource via in-code comments and notify the professor and
+ask permission. 
+
+\subsection{I/O Format: XML}
+The last important matter of business is to mention that all input and
+output for your command parser will be in XML (eXtensible Markup
+Language).  If you've never heard of XML, ask your friend Google about
+it, and you'll be in no short supply of information, especially since
+the newest version of MS office replaces the \texttt{.doc} format
+with XML as the default. This is because  XML offers a
+couple of major advantages to a standard text-based command parser;
+the first is that it is largely more relevant to a data structures
+course since the structure of XML is a general tree.  The second is
+that XML is popping up all over the IT industry, and chances are that
+you will be dealing with XML at your place of employment.  It's
+becoming the new standard for information exchange, so it's a good
+thing to be learning.  Another great thing about XML is that, in the
+past, students were required to error-check the commands.  Dr.  Hugue
+is a dependability expert, and she believes strongly in writing
+dependable code; a malformed text command should not crash your
+program.  XML is easily validated (both syntactically and
+structurally); so you can use pre-existing and readily available tools
+to confirm that both the input and output XML is error-free.
+
+As of Java 5.0, Java contains many interfaces to process and validate XML. 
+You are encouraged to take advantage of them. We will provide you with a 
+Java class called \texttt{XmlUtility} which does most of the heavy lifting for you. 
+It is discussed in another section.
+
+\subsection{Disclaimer}
+
+No programmer is perfect.  No guarantee is made that bugs do not exist
+in the code that is provided.  However, most of the code has been
+tested extensively; so, check your code as well as any code that is
+supplied.  Reporting and, perhaps, correcting bugs in supplied code is
+just one way to improve the quality of the course and earn class
+participation points. Of course, we have no plan to support validation of outputs except via correctness
+as tested on the submit server.
+
+\section{General notes on Java}
+By popular request, the notes on JAVA remain in the document, but have been relegated to the Appendix.
+They were not intended to be confusing to those of you who consider
+yourselves JAVA programmers, or to indicate  required processes. They
+were merely included to provide a bridge to folks who had their only
+JAVA experiences in CMSC 330.
+
+
+\section{MeeshQuest Components}
+
+There are four major components to this project each of which will upgraded
+with each part: a dictionary data structure, a spatial data structure, an
+adjacency list (not used in Part 1), and a mediator.
+ 
+\subsection{Dictionary Data Structure} 
+
+
+A dictionary data structure is one
+which is capable of storing objects in sorted order based on key such as a
+string or an integer. 
+For instance, you might have several hundred City
+objects which consist of the name of the city, the latitude and
+longitude
+at which it is located, and the radius or expanse of the city
+limits. One way of storing these cities
+is to sort them by name; another is to store them in  decreasing
+order by
+population; yet another
+ is in  increasing order by latitude.
+    
+
+
+
+
+To manage a structure based on the names of cities,  you would not need a
+comparator for cities; but, rather, since the keys  are city names (strings), your
+comparator would need to handle \texttt{strings}.
+So to compare cities  by name in Java 8.0,  your comparator might look like this:
+\begin{verbatim}
+public class CityNameComparator implements Comparator<String>
+{
+            public int compare (String s1, String s2) {
+                        
+                     (however you want to do string comparison) 
+                        return 
+
+            }
+
+}
+ 
+\end{verbatim}
+
+
+Specifically in this project we'll use a dictionary to hold and
+sort cities
+and attractions by name and a spatial data structure to hold and sort
+by coordinate. 
+
+
+
+
+
+\subsection{Spatial Data Structure}
+A spatial data structure is one which  is capable of storing
+and sorting objects based on multidimensional
+keys. The two-dimensional
+structures, such as the MX quadtree and PM quadtrees, can store objects
+based on two values, such as the longitude and latitude (x, y) of a
+city. In Java this is not a big deal, but in other languages, such as
+C and C++, it is.
+ Note that latitude lines are horizontal, north and south of
+  the equator, and correspond to lines with a fixed {\tt y} coordinate, such
+  as $y=30N$. Longitude lines  are
+  vertical, east and west of Greenwich, England, and correspond to lines with a fixed {\tt x} coordinate,
+  such $x=40W$.
+ Three-dimension structures, such as a K-d tree or a PM octree, can
+store objects based on three values, such as the longitude, latitude, and
+sea level of a city (x, y, z). 
+
+
+
+
+\subsection{Mediator}
+A Mediator is a design pattern that is described in the famous book
+\emph{Design} \emph{Patterns}
+by Gamma et Al, also referred to as the Gang of Four (GOF) book.\cite{designp}
+
+The intent of a Mediator is to \textbf{define} an object that encapsulates
+how objects within a set interact. Mediator promotes a loose coupling among objects
+by keeping objects from referring to each other explicitly, and it lets you 
+vary their interaction independently\footnote{While this design pattern is 
+presented on page 273 of~\cite{designp}, a Google search using ``design 
+patterns mediator'' is cheaper than buying the book.}
+
+In other words, the idea is to have one or more objects (hint: more!) which
+are capable of reading in commands from the input stream and executing them
+by calling the right functions in the dictionary, spatial, and adjacency
+list data structures (for Parts 2 and 3) to perform the requested action(s).
+
+Minimally, the Mediator could be a class named CommandParser which would
+read commands from the standard input stream, parse the data, pass it onto
+the correct component for further processing, analyze the return values
+from this component, print the correct success or failure message back to
+the user, and then loop until all commands have been processed.
+
+It would be wise (hint hint) to break this functionality into several
+classes which perform one or more of these tasks. These objects, when
+combined together, form the abstract notion of a Mediator for our
+MeeshQuest program.
+
+
+\section{Roadmap}
+
+
+This is a roadmap of the major component that we will use in each part of the project. 
+An asterisk (*) indicates that we will be reusing the structure from 
+the previous project with little or no modification. "i" stands for \texttt{insert}, "f" stands
+for {\tt find}, and "d" stands for {\tt delete}. (The command parser will have 
+new commands added with each project, but the overall design need not 
+change after project 1 unless you want to make it more efficient or elegant.) \\
+
+\begin{tabular}{|c|c|c|c|c|} \hline
+Part&Dictionary&Spatial&Adj. List&Mediator \\ \hline
+1&Treemaps (i/f/d), AVL (i/f)&MX Quad (i/f/d)&n/a&Any implementation \\ \hline
+2&AVL-G (i/f)&PM3 Quadtree (i/f)&Any (i/f/d) in $O(\log n)$&\verb|*| \\ \hline
+3&AVL-G (i/f/d)MX of &PM1/3   Quadtrees (i/f/d)&\verb|*|&\verb|*| \\ \hline
+\end{tabular}
+\begin{center}
+****NOTE: This roadmap is subject to change as the semester progresses.****
+\end{center}
+
+
+
+\section{Part 1: Comparators, Treemaps, Cities, MX Quadtrees, Range Searches, and AVL Trees}
+For the first part of your project, you will implement a data
+dictionary that supports both city names and city coordinates as keys.   
+You will also need to write an interpreter
+that will be able to handle basic XML commands.  
+ Your data dictionary can be written by merely playing
+games with comparators, thereby convincing a good old \texttt{TreeMap}
+or \texttt{TreeSet} to act like it's something else altogether.
+Commands will require you to insert verified cities into the
+spatial map, and to delete them from the spatial map. The role of the
+spatial map is to support range searches where, given a location in
+2-d space and a radius, you will find all the cities  within that
+circle, including on the border. These types of operations
+are allegedly not efficient using the treemap of coordinates; however,
+I have my doubts  and I might even let you prove it to me some day. Finally, you will be asked to adapt an implementation of an AVL Tree to support insertion of cities.
+
+\subsection{Data dictionaries and notes about Cities}\label{comparator}
+
+We have alluded to the fact that you are going to have to maintain a
+dictionary (a collection) of all the cities we create using the
+\texttt{createCity} command.  Generally speaking, you are going to want
+to be able to access cities by their names in logarithmic time.  You can
+use a \texttt{TreeMap} for this, where the keys are the cities' names
+and the values are the city objects themselves.  This will allow you to
+get the cities' $(x,y)$ coordinates based on their names very quickly.
+You also need to be able to find cities based on their $(x,y)$
+coordinates, since aside from two cities bearing the same name being
+illegal, two cities cannot occupy the same $(x,y)$ coordinate.  You'll
+need a way to sort points in 2D space in such a way that they can be
+stored in a \texttt{TreeMap}.  Remember reading about comparators?
+
+%%%%%%%%%  6/1/15  Y dominates X in the comparator
+
+You can write a comparator that will sort $(x,y)$ coordinates in a
+useful way: sort on the $y$ coordinate first; if two cities have the
+same $y$ coordinate, compare their $x$ coordinates to determine their
+final ordering.  A sample ordering:
+
+\begin{quote}
+\begin{verbatim}
+(0,0)
+(1,0)
+(100,0)
+(0,1)
+(1,5)
+(100, 100)
+(0,1000)
+(5,1000)
+(50,1000)
+\end{verbatim}
+\end{quote}
+
+%%%%% end comparator  y,x mod
+
+Keep in mind: cities will always have integer coordinates. In fact, we
+will only use integer values as inputs to your projects. However, you
+may find it useful to convert them to floats or doubles in later project parts.
+
+For every city created, you'll need to add it to two dictionaries: the
+first maps strings to cities (name to city object) and the second would
+map city objects to strings (names).  However, if you write your
+\texttt{City} class such that the city's name is one of its fields, then
+using maps doesn't seem to make any sense because the keys contain all
+the info you need (but keep reading).  You could instead use sets.
+The first set, which sorts by name, uses a \texttt{CityNameComparator}
+which compares two cities just based on the default string comparison
+between their two names, and the second which uses a
+\texttt{CityCoordinateComparator} which compares two cities based on the
+$(x,y)$ ordering discussed above.  However, there is one minor problem
+with using sets: once you put something into a set, you can't easily
+get it out again based on some other data type.  In other words,
+suppose I pass you a string $s$, which I claim is the name of a city in
+your set.  If you modified your comparator to allow strings to be
+passed to the \texttt{compare()} method, the best you could do is tell
+me that the city with that name either exists or doesn't exist---you
+can't get the actual city object back out of your set in better than
+linear time.  So at least for the names, you definitely want to use a
+\texttt{Map} despite the fact that a \texttt{Set} could sort them for
+you.  The coordinate dictionary will probably only be used to check
+containment, so in that case a set is probably sufficient.
+
+Here I go again alluding to this mysterious \texttt{City} object.
+Yeah, the major data type we'll deal with throughout this project is a
+colored, named point in 2D space which we will be calling a
+\texttt{City}.  Yes, you will have to write some class to store this
+information.  A subjugate data type which you will probably also need
+to implement is a line segment in 2D space, which we're calling an
+\texttt{Road}.  You'll have to do geometric computations involving
+roads and cities (specifically distance).  Boo.  Fortunately, Java has
+already done that for you.  If you look at the \texttt{java.awt.geom}
+package, you'll see two useful classes: \texttt{Point2D} and
+\texttt{Line2D}.  Both of these are abstract classes, but each
+contains two inner classes that are concrete implementations of their
+enclosing classes: \texttt{Point2D.Float}, \texttt{Point2D.Double},
+\texttt{Line2D.Float}, and \texttt{Line2D.Double}.  As you've guessed,
+the \texttt{.Float} and \texttt{.Double} refer to the precision in
+which their coordinates are stored.  There's no
+\texttt{Point2D.Integer}, but you can just use the \texttt{Float}
+version.  We'll never pass you a point whose coordinates have more
+than 23 significant digits (thus subjecting you to a precision error
+due to the limitations of \texttt{Float}).
+
+The best way to implement a \texttt{City} is to have your class extend
+\texttt{Point2D.Float}, and add data members (strings) for name and
+color.  Note that \texttt{Point2D} defines two public fields,
+\texttt{x} and \texttt{y}, which store the coordinate data.  Note: do
+\emph{not} redefine an \texttt{x} and \texttt{y} in your \texttt{City}
+class if you extend \texttt{Point2D.Float}.  Most Java compilers will
+allow you to create fields with the same names as fields in the parent
+class, but good editors like Eclipse will warn you about it.  The
+problem with redefining your own fields is that the \texttt{Point2D}
+class has already implemented all the geometric computations you need
+to worry about, but those methods use the \texttt{x} and \texttt{y} as
+defined in the \texttt{Line2D.Float} class.  If you redefine
+\texttt{x} and \texttt{y} in \texttt{City} and fail to set the
+\texttt{x} and \texttt{y} in the parent class (by saying
+\texttt{super.x =} and \texttt{super.y =}) your geometric computations
+will never work because all your points will be treated like
+\texttt{(0.0f,0.0f)}.  The same goes for \texttt{Line2D} and its
+\texttt{x1}, \texttt{y1}, \texttt{x2}, \texttt{y2} fields.
+
+You should avoid the urge to make your \texttt{City}s 
+implement the \texttt{Comparable} interface since I've already
+described two obvious ways to sort them and there are probably more.
+It's better to force your users to provide a \texttt{Comparator} than
+run the risk of them expecting one ordering and discovering another.
+\texttt{Comparator}s are quick and easy to write and prevent any
+possible confusion on how they'll turn out when sorted.
+
+
+\subsection{Drawing a spatial map using CanvasPlus}
+We have developed a Java applet to visualize what you are doing. Mapping commands 
+will interact with the visual map you are building, and two commands will be able to print out what
+ the map looks like. Everything you need to build the map properly is discussed below.
+
+To create a new visual map of dimensions spatialWidth x spatialHeight:
+\begin{verbatim}
+	CanvasPlus canvas = new CanvasPlus("MeeshQuest", spatialWidth, spatialHeight);
+\end{verbatim}
+
+To initialize the map and make sure it looks correct, we need to add rectangular bounds to the map since the map gives 
+us a small border. The rectangle should be black and unfilled.
+\begin{verbatim}
+	canvas.addRectangle(0, 0, spatialWidth, spatialHeight, Color.BLACK, false);
+\end{verbatim}
+
+To add a named point to the map (despite the fact that cities have color and radius attributes we will always be drawing them as black points):
+\begin{verbatim}
+	canvas.addPoint("name", x, y, Color.BLACK);
+\end{verbatim}
+
+To remove a point works the same way:
+\begin{verbatim}
+	canvas.removePoint("name", x, y, Color.BLACK);
+\end{verbatim}
+
+To add other shapes (line segments, circles, rectangles, etc) the syntax is similar. See the javadoc for CanvasPlus.
+For example, to add a blue, unfilled circle:
+\begin{verbatim}
+	canvas.addCircle(x, y, radius, Color.BLUE, false);
+\end{verbatim}
+
+You will also be required to add a cross (a horizontal and a vertical line partitioning a rectangular section into 4 equal sections) where your MX Quadtree is partitioned (i.e. at each internal node). The cross should follow the rules of the MXQuadtree correctly. A cross should exist for each internal node of the MX Quadtree. The cross should be black, centered at the internal node's spatial center, and the radius of the cross should not exceed the spatial bounds of the internal node.
+
+Examples will be provided for all visual components of the project.
+
+To save a map to an image file:
+\begin{verbatim}
+	canvas.save("filename");
+\end{verbatim}
+{\bf Important: After calling the save method, CanvasPlus is still running. 
+Remember to call the map's dispose() method when you are finished processing all the input. 
+Otherwise your program will keep running.}
+
+The drawing packages are provided for your benefit. You are encouraged to use them when testing your MX Quadtree. In that case, you could simply call the CanvasPlus draw() method to open a window displaying the current map.
+
+\subsection{AVL Tree Requirements}
+ 
+In Part~1, you will need to implement an AVL Tree. For every city that
+successfully has been mapped into the MX Quadtree, you must add it to
+an  AVL Tree that outputs its information in descending  asciibetical order. 
+
+The AVL Tree is intended as a record of all cities ever added to the spatial structure.
+The AVL Tree will only be cleared of data after the command clearAll is encountered. Unmapping and deleting cities will have no effect on the AVL Tree; thus, an attempt to add a city already present in the  AVL tree  is \textbf{not} an error.
+We now move into definition of AVL Tree and requirements for the project.
+
+\begin{quote}
+The AVL tree (named for its inventors Adelson-Velskii and Landis) should be
+viewed as a BST with the following additional property: For every node, the heights
+of its left and right subtrees differ by at most 1.
+\end{quote}
+
+In Part 2, we will extend this definition to the notion of an AVL-g tree that can have heights differ by at most \texttt{g}. Furthermore, in Part 2 you will be required to implement the SortedMap Java interface for the AVL tree. For Part 1, you will only be asked to print out your AVL tree in a specific format.
+
+
+%%%%%%
+%%%%%   2/14/16  corrected definition of height of AVL tree.%
+%%%%%%
+%%%%%%
+%%%%%%
+%%%%%%
+%%%%%%
+
+We now proceed into a formal definition of an AVL-g tree. For part 1,
+you will only have to implement an AVL tree of balance factor 1. First
+we define the height of a node recursively.  A leaf
+node (and root-is-a-leaf node) has height 0;  an internal node has a height 
+of  one plus  the maximum height of its  child nodes. For
+completeness,  we define the
+height of an empty binary tree to be -1.  The height of any subtree is the
+height of the root node of the subtree.
+
+Thus, an AVL-g tree is  a binary search tree which satisfies the AVL-g
+property. That is, the heights of the child
+subtrees of the root of any 
+subtree differ by at most \texttt{g}, a positive constant.
+The constant is given at instantiation,
+by way of a parameter to the constructor.  
+When g is 1, you get the standard AVL tree discussed in the
+literature.\footnote{Do not bother searching for an AVL-g tree.  That is
+  one of those Darth Hugue Details (DHD)--no one does it but Darth Hugue.}
+
+
+\subsubsection{Borrow an AVL tree--do NOT code your own}
+You are expected to find an implementation of an AVL tree
+somewhere--in a book, on line, in a paper. Just copy it, debug it, and
+provide a valid reference to the source in your code and in your
+README file.  Several techniques  to check for the AVL tree property
+appear in the literature. Some maintain the height of each node as a
+value and compute the subtree height difference with every operation
+that could change heights.   Others store only the balance factors:
+balanced is 0, right heavy is 1,  left heavy is -1.  We don't care as
+long as we can verify that the structure has the expected  keys and
+values,  and
+satisfies but AVL and BST properties.
+
+
+
+
+\subsubsection{AVL tree Validation}
+
+These rules ARE \textbf{mandatory}, meaning that
+no credit will be given for code for which these rules are not observed.
+For MeeshQuest Part 1,  the parameter, \texttt{g}, is fixed at one
+(1).
+Thus, a valid AVL-g tree will satisfy the AVL property of order one(1)
+and will  satisfy the BST property with keys
+\textbf{in descending asciibetical order}.
+Instead of implementing this as a reverse in-order traversal or changing the all of the 
+key comparisons in the source code you find, the elegant Java way to implement this is to
+have your tree accept a Comparator for the comparison of keys.
+Our 
+AVL tests will validate  the  AVL and 
+BST properties, as well as  the correctness of any key-value mappings passed into it. 
+
+Obviously, there can be multiple AVL trees of a given order that
+are correct.
+Since grading by merely diff-ing is impossible, we will 
+grade your tree by checking that the structure you produce
+satisfies the above properties.
+
+
+
+
+\subsection{A command interpreter for XML}
+
+If you haven't heard of XML yet, now is a good time to read up.  XML
+stands for extensible markup language and is quickly becoming the
+standard for textual data representation.  If you haven't used XML yet
+at work or for another class, you will probably see it soon.  XML is a
+tag-based hierarchical organization of data (i.e., a data structure).
+If you want to look at an XML document through a data structures lens,
+an XML document is a general tree whose nodes are either named tags or
+blocks of text.  A great site with great tutorials that cover the
+basics of XML is available at
+\htmladdnormallink{www.w3schools.com}{http://www.w3schools.com/}.
+
+Google will also tell you everything you want to know about XML---it's
+so widespread at this point that there are probably hundreds of
+tutorials already written--and this document, like my exams, is already too long.
+
+For your project, your input and output will be in XML format.  XML is
+convenient because it is designed to be validated (in other words,
+checked for correctness).  Every XML document can optionally include a
+reference to its W3C XML Schema (commonly referred to just as XML Schema) which is an
+external XML document that contains the rules for what elements an XML
+document can contain.  In other words, a schema defines the rules for the
+XML structure.  Thus, by validating an XML document against a schema, you
+can quickly determine whether or not the XML contains certain kinds of
+errors.  If you happen to have handy a solid XML parser and a solid
+schema validator, you can eliminate the majority of possible input/output
+errors.  Fortunately for you, they are included in the Java 7.0 API and the files  we provide do a lot of the work for you.
+
+At this point I am going to assume you are familiar with XML.  In
+order to test your project, you are going to provide a Java program
+(i.e., a class with a \texttt{main()} method) that will read a series
+of XML commands from an input stream, process those commands, and
+generate an XML document containing the results.  For simplicity's
+sake, the input XML will be simple enough to process without using any
+XML tools and will in fact differ little from the command structure
+used in semesters past.  The XML will simply be a sequence of empty
+elements whose names indicate the command to issue and whose
+attributes will provide the extra information, for example:
+\begin{quote}
+\begin{verbatim}
+<createCity name="A" x="5" y="25" color="red" radius="10"/>
+<createCity name="B" x="10" y="10" color="blue" radius="10" /> ...
+<deleteCity name="A" />
+\end{verbatim}
+\end{quote}
+
+and so forth.  If you wanted, you could write your own command parser
+that treats these tags as merely strings with which you can do as you
+please, as students were required to do in previous semesters.
+However, because this is XML, it follows all of XML's rules and is
+free to do whatever it wants when there isn't an XML rule about it.
+For example, in XML attributes are not required to appear in any
+order.  So for us, the following two commands are identical:
+\begin{quote}
+\begin{verbatim}
+<createCity name="X" x="0" y="0" color="yellow" />
+<createCity x="0" name="X" color="yellow" y="0" />
+\end{verbatim}
+\end{quote}
+This will complicate your parsing slightly.
+
+A few things to keep in mind---first, XML is case-sensitive when it
+comes to element and attribute names, so ``createCity'' is \emph{not}
+the same as ``cReAtEcity''.  Another thing to observe is that XML schemas can do type-checking for attributes and elements. So we can, for example,
+automatically enforce the restriction that the \texttt{x} and
+\texttt{y} attributes for the \texttt{createCity} command must adhere
+to the regular expression~`\verb1(0|(-?[1-9][0-9]*))' (more specifically, we can simply
+ define them to be of \texttt{integer} type).
+So you do not have to refer to the spec for the regular expressions
+associated with certain attributes. Note--this makes your project code simpler, because much validation
+of data occurs at the world/program interface level.  Some attributes, like
+\texttt{color}, have only a few legal values.  Attributes whose values
+can be enumerated in a list of legal values can also be enforced by a schema,
+so you won't have to worry about those.  In general:
+
+\begin{itemize}
+
+\item Any attribute whose value is obviously a number (such as
+  \texttt{x} and \texttt{y} in \texttt{createCity}) will typically
+  follow the aforementioned regular expression
+  \verb&(0|(-?[1-9][0-9]*)).& 
+   In other words, integers.  A programmatic
+  description is that you should be able to obtain the integer value
+  passing them through \texttt{Integer.parseInt()}.
+  of numerical attributes by obtaining their values as strings and
+
+\item Any attribute whose value is defined to be a string (such as
+  \texttt{name} in \texttt{createCity}) must have  a non-numeric first
+  character; however, the remaining part can consist of any
+  combination of numbers, upper case and lower case letters, and 
+  the underscore character.  Thus, the regular expression for string
+  attributes will be         \verb1([_a-zA-Z][_a-zA-Z0-9]*).1 
+
+\end{itemize}
+
+Again, these type issues are all taken care of by the XML schema; so,
+ as long as you have your validator configured properly you should be able to catch the exceptions thrown by your validator and do what you need to from there.
+
+\subsubsection{Using the provided XML processing code to get a working
+  parser  (\texttt{updated})}
+
+The DOM (Document Object Model) is most relevant to data
+structures since it organizes XML objects into a general tree.  XML
+objects are lots of things, but the three things we care most about
+are documents, elements, and attributes.  In the DOM, every XML object
+implements the \texttt{org.w3c.dom.Node} interface.  \texttt{Node}s
+have a lot of useful methods, but the ones you care most about are
+\texttt{getNodeName()}, \texttt{getNodeValue()}, and
+\texttt{getAttribute()}.  Suppose you had a \texttt{Node} object
+representing one of our command elements.  You could determine which
+command it was with the following code:
+\begin{quote}
+\begin{verbatim}
+Element command = ...;
+if (command.getNodeName().equals("createCity"))
+// createCity command
+\end{verbatim}
+\end{quote}
+To get the value of an attribute, you could use this code:
+\begin{quote}
+\begin{verbatim}
+String name = command.getAttribute("name");
+\end{verbatim}
+\end{quote}
+
+The next logical question is how do we get an input XML file into a
+collection of \texttt{Node} objects? By using the \texttt{XmlUtility} file provided 
+there is a static method called \texttt{validateNoNamespace} that takes 
+an \texttt{InputStream} or a \texttt{File} as a parameter and either throws 
+an \texttt{SAXException} for an invalid XML document or returns an 
+\texttt{org.w3c.dom.Document} object that models the XML document.
+
+For our collection of commands, the XML file will be similar to this:
+\begin{quote}
+\begin{verbatim}
+<?xml version="1.0" ?>
+<commands>
+    <createCity ... />
+    ...
+</commands>
+\end{verbatim}
+\end{quote}
+
+The first line is a processing instruction which you don't have to
+worry about (if you are writing a parser by hand, you can ignore any
+tag beginning with ``\texttt{<?}'').  Because XML is a tree, it must
+have exactly one root, so we have to nest the list of commands as
+child elements of the single root element.  Given an
+\texttt{org.w3c.dom.Document} object, you can acquire the XML's root
+element by using the \texttt{getDocumentElement()} method.  To get a
+list containing all of the child nodes of this element, use the method
+\texttt{getChildNodes()} defined in \texttt{Node}.  The return type of
+this method is \texttt{NodeList}, which is basically a type-safe subset
+of the \texttt{java.util.List} interface.  To iterate through the
+items in this list, the code would look like this:
+\begin{quote}
+\begin{verbatim}
+Document d = XmlUtility.parse(new File("in.xml"));
+Element docElement = d.getDocumentElement();
+NodeList nl = docElement.getChildNodes();
+for(int i = 0; i < nl.getLength(); ++i) {
+    Node command = nl.item(i); // process the command here
+}
+\end{verbatim}
+\end{quote}
+
+The last piece of usefulness is the ability to validate the element
+against the document's schema to make sure, for example, that the command
+is one of the valid commands for this part of the project, that all of
+the required attributes are present in this element, that all values of are correct type, and so forth.
+I've written a method called \texttt{validateNoNamespace} which
+validates an entire XML Document against an internally referenced schema 
+(you don't need to know about XML namespaces for this project so don't worry about that).  
+
+The syntax for binding an XML document to a schema looks looks like this:
+
+\begin{quote}
+\begin{verbatim}
+<?xml version="1.0" ?>
+<commands
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="part1in.xsd"
+    <createCity ... />
+    ...
+</commands>
+\end{verbatim}
+\end{quote}
+
+Note a few things. The first attribute defines a new namespace based on the W3C's spec for XML Schema. 
+The second attributes specifies the location of the schema. So to make sure your XML validates against 
+the schema, you want something that looks more like this:
+
+\begin{quote}
+\begin{verbatim}
+Document doc = XmlUtility.validateNoNamespace(new File("in.xml"));
+Element docElement = d.getDocumentElement();
+NodeList nl = docElement.getChildNodes();
+for(int i = 0; i < nl.getLength(); ++i) {
+    Node command = nl.item(i); // process the command here
+}
+\end{verbatim}
+\end{quote}
+
+To ignore comment nodes, you can even do an \texttt{instanceof} check of the command node to make sure it is of type \texttt{Element}.
+
+The last bit of testing you'll need to do is contextual or semantic
+checking---for instance, attempting to create two cities with the same
+name should result in the second command issuing an error.  The full
+list of error conditions will be listed separately since as the
+semester progresses new error conditions will be introduced as new
+commands are introduced as well.  This last type of checking will
+involve interfacing with your dictionaries.
+
+\subsubsection{ Outputting XML using DOM}
+
+While you certainly could print out all the XML manually, it is much better in the long run to learn to use DOM to print out your XML. Again, the \texttt{XmlUtility} file we provide simplifies some of this process. You only need to know a few methods to easily do this project.
+
+To create a Document object:
+\begin{quote}
+\begin{verbatim}
+Document results = XmlUtility.getDocumentBuilder().newDocument();
+\end{verbatim}
+\end{quote}
+
+To create an Element object:
+\begin{quote}
+\begin{verbatim}
+Element elt = results.createElement("elementName");
+\end{verbatim}
+\end{quote}
+
+To set an attribute for an Element:
+\begin{quote}
+\begin{verbatim}
+elt.setAttribute("attributeName", "attributeValue");
+\end{verbatim}
+\end{quote}
+
+To append an Element to another Node:
+\begin{quote}
+\begin{verbatim}
+results.appendChild(elt);
+\end{verbatim}
+\end{quote}
+
+To print out a \texttt{Document} to \texttt{System.out}:
+\begin{quote}
+\begin{verbatim}
+XmlUtility.print(results);
+\end{verbatim}
+\end{quote}
+
+\subsubsection{ Outputting XML Conventions \label{oxu}}
+
+For the first project, again for the sake of brevity and ease of
+grading,
+your output will
+be a series of elements in response to commands, each of which is a
+reaction to an issued command.
+
+ \begin{Description}
+
+ 	\item[\textbf{General} \texttt{<success>} Output]
+	This is an example of the form (in the exact output order) of a general \texttt{<success>} tag. All tags will be present even if there are no parameters or outputs.
+	\begin{quote}
+	\begin{verbatim}
+		<success>
+		    <command name="name1"/>
+		    <parameters>
+		        <param1 value="value1"/>
+		        <param2 value="value2"/>
+		    </parameters>
+		    <output/>
+		</success>
+	\end{verbatim}
+	\end{quote}
+
+	\item[\textbf{General} \texttt{<error>} Output]
+
+	This is the form (in the exact output order) of a general \texttt{<error>} tag. The \texttt{<parameters>} tag will always be present even if there are no parameters to the command. In each command there may be several errors listed if several errors occur in a command you will only output the error of \emph{highest priority}. For more information see XML Input specification for each command.
+
+	\begin{quote}
+	\begin{verbatim}
+		<error type="error1">
+		    <command name="name1"/>
+		    <parameters>
+		        <param1 value="value1"/>
+		        <param2 value="value2"/>
+		    </parameters>
+		</error>
+	\end{verbatim}
+	\end{quote}
+
+	\item[\textbf{General} \texttt{<fatalError>} Output]
+	This is the form of a General \texttt{<fatalError>} tag. This is used when there is a problem with the entire document (i.e. the input file is invalid XML or does not conform to the schema)
+
+	\begin{quote}
+	\begin{verbatim}
+		<fatalError />
+	\end{verbatim}
+	\end{quote}
+	
+	\item[\textbf{General} \texttt{<undefinedError>} Output]
+	This is the form of a general \texttt{<undefinedError>} tag. This is a default error that will be used if there is an error that is not specified in the spec and is discovered post freezing. 
+
+	\begin{quote}
+	\begin{verbatim}
+		<undefinedError />
+	\end{verbatim}
+	\end{quote}
+
+	\item[\textbf{General sorting of} \texttt{<city>}]
+
+	Ordering of \texttt{<city>} tags that are contained within the
+	\texttt{<output>} tag is in increasing asciibetical order of
+	the city's \emph{name} according to the
+	\texttt{java.lang.String.compareTo()} method \emph{unless} the
+	method for sorting is specified within the command's
+	specification.
+
+\end{Description}
+
+The testing of your messages won't be as stringent as the fact that
+you reported a success in the first place.  More precise information
+about what the messages are for each command is contained in the \textbf{Input} section of this document.
+
+The root element for output will be \texttt{<results>}.  The
+final XML, at a minimum, should look like this:
+
+\begin{quote}
+\begin{verbatim}
+<results>
+    <success ... />
+    <success ... />
+    <success ... />
+    <error ... />
+    <success ... />
+    ...
+    <success ... />
+</results>
+\end{verbatim}
+\end{quote}
+
+
+\subsection{XML command specifications--Current for Fall 2016}
+
+Herein lies the XML specifications for the input files you
+will be provided and for the output files you will be expected to
+generate.  Check these pages regularly as they contain the information
+both most relevant and most likely to change.  Each phase of the
+project will introduce a new set of commands your parsers will be
+expected to handle.
+
+\subsubsection{Commands}
+
+Input will be provided via input redirection.  In other words, input
+files will be passed to your program via the standard input stream
+(\texttt{System.in}).
+
+The basic structure of the input XML will be a document whose root tag
+is \texttt{<commands>}.  \texttt{<commands>} will contain, as its
+children, any series of the other commands.  All commands (for Part~1
+at least) will be single empty elements (recall that an empty element
+is one that has no children) which contain zero or more
+attributes. Input values that are numeric will always be integers.
+The schema and sample inputs will probably be sufficient in describing
+the input format.  \emph{If the schema does not match the input a \texttt{<fatalError>} 
+tag is printed without a \texttt{<results>} tag}. Of most interest is the success and error
+conditions for each command and the corresponding messages each should
+provide.  Here's the list:
+
+\begin{Description}
+
+\item[\texttt{commands}] This is the root element of the XML tree for
+  the input files.  It contains attributes that will affect the
+  behavior of your command interpreter.
+
+The attributes are \texttt{spatialWidth} and
+  \texttt{spatialHeight},  both {\bf powers of 2}, but in the range of
+   32 bit 2's   complement integers.  These two attributes define the
+  rectangular region the spatial data structure can store.  Note that
+  the lower left corner of this region is always $(0,0)$, the origin,
+  as we will not be dealing with negative {\bf city coordinates} in this project.
+  Thus, the spatial structure's bounding volume is the rectangle whose
+  {\bf lower left corner} is $(0,0)$ and whose width and height are given by
+  these two parameters.  You must setup your spatial structure to be
+  centered accordingly.  Note that although all of our coordinates
+  will be given as integers, you may need to center your spatial
+  structure around a coordinate that is not an integer; so, make sure
+  you plan accordingly.
+
+  Observe that these two values  have an impact on the success of 
+the \texttt{<mapCity>} command, but{\sc Do Not}  affect the success of the
+  \texttt{<createCity>} command.  Cities can be created in the data
+  dictionary with coordinates outside the boundaries of this range, on
+  the boundary as well as inside this range. However, only cities on
+  the left and bottom boundaries of this range can be ``mapped'' or
+  inserted into the MX quadtree.
+  
+  	\texttt{Possible errors:}
+	\begin{quote}
+		If there is any problem with the attributes in the \texttt{<command>} tag a \texttt{<fatalError>} tag is outputted without a \texttt{<results>} tag, and the program exits.
+	\end{quote}
+	
+\begin{Description}
+	\item[\textbf{createCity}]
+	Creates a city (a vertex) with the specified
+	 name, coordinates, radius, and color. A city can be successfully created
+  	if its name is unique (i.e., there isn't already another city with
+ 	 the same name) and its coordinates are also unique (i.e., there
+  	isn't already another city with the same $(x,y)$ coordinate). 
+
+%%%%%%%
+%%%%%%   Removed 2/14/16   Do NOT restore!!!
+%%%%%%
+%%%%% Furthermore, for all cities $A$ that already exist, no other
+%%%%% city $B$ can be contained in the circle centered at ($x$, $y$)
+%%%%% with radius $r$, where $x$, $y$, and $r$ are the $x$-coordinate,
+%%%%% $y$-coordinate, and radius of $A$, respectively. We say that $B$
+%%%%% is in range of $A$ when this happens, and this will produce an
+%%%%% error. 
+%%%%%%y
+
+
+All names are \emph{case-sensitive}.\\\\ 	
+	\texttt{Parameters: (In output order)}
+	\begin{quote}
+		name\\
+		x\\
+		y\\
+		radius\\
+		color
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+	\texttt{Possible \emph{<error>} types (In priority order):}
+	\begin{quote}
+		duplicateCityCoordinates \\     %%%% 6/1/15 change
+		duplicateCityName 
+		%%%%%cityInRangeOfOtherCity 2/14/16 redacted  9/9/15 change
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="createCity"/>
+	    <parameters>
+	        <name value="Annapolis"/>
+	        <x value="12"/>
+	        <y value="14"/>
+	        <radius value="15"/>
+	        <color value="red"/>
+	    </parameters>
+	    <output/>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+	\item[\textbf{deleteCity}]
+	 Removes a city with the specified name from data dictionary. The criteria for success here is simply that the
+   city exists. Note that if the city has been mapped, then it must be
+   removed from the MX quadtree first, and then deleted.\\\\
+	\texttt{Parameter:}
+	\begin{quote}
+		name
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+   If the city is in the spatial data structure, a cityUnmapped tag will
+   appear as:
+\begin{verbatim}
+   <cityUnmapped name="city1" x="coordx" y="coordy" color="color1" radius="radius1"/> 
+\end{verbatim}
+	\end{quote}
+	\texttt{Possible \emph{<error>} types (In priority order):}
+	\begin{quote}
+		cityDoesNotExist
+	\end{quote}
+   \texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="deleteCity"/>
+	    <parameters>
+	        <name value="Annapolis"/>
+	    </parameters>
+	    <output/>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+	\item[\textbf{clearAll}]
+	Resets all of the structures including the MX Quadtree and the AVL Tree, clearing them.
+  	This has the effect of removing every city.  This
+  	command cannot fail, so it should unilaterally produce a
+	\texttt{<success>} element in the output XML.\\\\	
+	\texttt{Parameter:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="clearAll"/>
+	    <parameters/>
+	    <output/>
+	</success>
+	\end{verbatim}
+	\end{quote}	
+
+%%%%%% list by name: descending asciiBetical order      06/01/15
+%%%%%%% list by coordinate:  using y-dominant compartor 
+
+
+	\item[\textbf{listCities}]
+	Prints all cities currently present
+  	in the dictionary.   The order in which the attributes for the \texttt{<city>} tags are
+ 	listed is unimportant.  However, the city tags themselves must be
+  	listed either by name in descending  order  or by coordinate in
+        ascending order, as per
+  	the \texttt{sortBy} attribute in the \texttt{listCities} command,
+ 	whose two legal values are \texttt{name} and \texttt{coordinate}.
+  	The ordering by name is asciibetical according to the
+  	\texttt{java.lang.String.compareTo()} method, and the ordering by
+  	coordinate uses the comparator  discussed in Section \ref{comparator}.  To reiterate,
+  	coordinate ordering is done by comparing $y$ values first; for cities
+  	with the same $y$ value, one city is less than another city if its $x$
+  	value is less than the other.  This command is only successful if there is at least
+  	1 (1 or more) cities in the dictionary.\\\\ 	  %%%%% y dominance here
+	\texttt{Parameter:}
+	\begin{quote}
+		sortBy
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		A \texttt{<cityList>} tag will be contained in \emph{output} and will contain 1 or more
+		city tags of the form:\\
+		\texttt{<city name="city1" x="coordx" y="coordy" color="color1" radius="radius1"/>}
+	\end{quote}
+	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		noCitiesToList
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="listCities"/>
+	    <parameters>
+	        <sortBy value="name"/>
+	    </parameters>
+	    <output>
+	        <cityList>
+	            <city name="Derwood" x="19" y="20" color="red" radius="40"/>
+	            <city name="Annapolis" x="5" y="5" color="blue" radius="90"/>
+	        </cityList>
+	    </output>
+	</success>
+	\end{verbatim}
+	\end{quote}
+	
+	\item[\textbf{mapCity}]
+	Inserts the named city into the spatial map. \\\\	
+	\texttt{Parameter:}
+	\begin{quote}
+		name
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+   	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		nameNotInDictionary\\
+		cityAlreadyMapped\\
+		cityOutOfBounds
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="mapCity"/>
+	    <parameters>
+	        <name value="Annapolis"/>
+	    </parameters>
+	    <output/>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+	\item[\textbf{unmapCity}] 
+	Removes the named city from the spatial map. \\\\
+	\texttt{Parameter:}
+	\begin{quote}
+		name
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+   	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		nameNotInDictionary\\
+		cityNotMapped
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="unmapCity"/>
+	    <parameters>
+	        <name value="Annapolis"/>
+	    </parameters>
+	    <output/>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+
+
+	\item[\textbf{printMXQuadtree}]
+	Prints the MX quadtree.
+	Since MX quadtrees are deterministic, your XML should match exactly
+	the primary input/output.\\\\
+	\texttt{Parameter:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		 A \texttt{<quadtree>} tag will be contained within \emph{output} and will contain
+		 several \texttt{<gray>} \texttt{<white>} and \texttt{<black>} nodes. \\
+		The \emph{first} node in the \emph{quadtree} will be the root node, this node can be \emph{gray} or \emph{black}, then the rest of the MX Quadtree follows. Remember, the exact structure of the \emph{quadtree} will be represented by the XML output.
+		\begin{Description}
+		\item[\texttt{<gray>}] Nodes will contain \emph{4} children nodes with ordering decided by the order of the nodes within the actual \emph{gray} node in your MX Quad Tree.\texttt{<gray>} nodes will have the attributes \textbf{x} and \textbf{y}, these are integers that identify the location of the \emph{grey} node. They will appear as such
+		\begin{quote}
+		\begin{verbatim}
+		<gray x="72" y="40">
+		    ...
+		</gray>
+		\end{verbatim}
+		\end{quote}
+		\item[\texttt{<black>}] Nodes represent a mapped city in your MX Quadtree, they have the attributes \textbf{name}, \textbf{x} and \textbf{y}. These will identify the city name and location of the \emph{black} node, and will appear as such;\\
+		\texttt{<black name="Chicago" x="81" y="47"/>}\\
+		\item[\texttt{<white>}] Nodes represent an empty node in your MX Quadtree and will appear as such;\\
+		\texttt{<white/>}
+		\end{Description}
+	\end{quote}
+	   	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		mapIsEmpty
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="printMXQuadtree"/>
+	    <parameters/>
+	    <output>
+	        <quadtree>
+	            <gray x="64" y="64">
+	                <white/>
+	                <white/>
+	                <white/>
+	                <gray x="96" y="32">
+	                    <gray x="80" y="48">
+	                        <white/>
+	                        <white/>
+	                        <gray x="72" y="40">
+	                            <black name="Boston" x="71" y="42"/>
+	                            <white/>
+	                            <white/>
+	                            <black name="Baltimore" x="76" y="39"/>
+	                        </gray>
+	                        <gray x="88" y="40">
+	                            <black name="Chicago" x="81" y="47"/>
+	                            <white/>
+	                            <black name="Atlanta" x="84" y="33"/>
+	                            <white/>
+	                        </gray>
+	                    </gray>
+	                    <black name="Los_Angeles" x="118" y="33"/>
+	                    <black name="Miami" x="80" y="25"/>
+	                    <white/>
+	                </gray>
+	            </gray>
+	        </quadtree>
+	    </output>
+	\end{verbatim}
+	\end{quote}
+
+
+	\item[\textbf{saveMap}] 
+	Saves the current map to a file. The image file should be saved with the correct name. It should match our image file: same dimensions, same cities, same colors, same partitions, etc.
+	How to keep track of your graphic map is discussed in the previous section. Printing it out is discussed there too. \\\\
+  	\texttt{Parameters (In output order):}
+	\begin{quote}
+		name - filename to save the image to
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+   	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		\emph{(none)}
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="saveMap"/>
+	    <parameters>
+	        <name value="map_1"/>
+	    </parameters>
+	    <output/>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+
+
+	\item[\textbf{rangeCities}]
+	Lists all the cities present \emph{in the spatial  map} within a
+	\texttt{radius} of a point \texttt{x,y} \emph{in the spatial  map}.
+        Cities on the boundary of the circle are included, and
+	\texttt{x,y} are integer coordinates. That is, only cities
+	that are in the spatial structure, in this case, the MX
+	quadtree, are relevant to this  commmand.
+%%%%%% Change 6/1/15  city with zero range
+
+	\texttt{<success>} will result from the existence of at least
+        one \texttt{<city>} that satisfies  the range check
+        condition.   
+	If none does, then an \texttt{<error>} tag will be the
+        result. 
+        If the radius is 0 and no   city occupies  the point
+        \texttt{x,y}, then  \texttt{<error>} tag is the result.
+
+
+	It should be noted that the radius attribute for a city does not factor into this calculation; all cities are considered points.\\
+	If the \texttt{saveMap} attribute is present, the current map will be saved to an image file (see saveMap).
+	The image file should be saved with the correct name. It should match our image file: same dimensions, same cities, etc.
+	How to keep track of your graphic map is discussed in saveMap. Printing it out is discussed there too. 
+	The main difference with saveMap is that the image file should have a blue unfilled circle centered at the (x,y) values passed in with the radius passed in. 
+	Because CanvasPlus does not behave well when shapes exceed the bounds of the spatial map, the saveMap attribute will only be present when an entire 
+	range circle lies inclusively within the bounds of the spatial map.\\\\
+	 \texttt{Parameters (Listed in output order):}
+	\begin{quote}
+		x\\
+		y\\
+		radius\\
+		saveMap (optional) - image filename
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		The \emph{output} will contain one \texttt{<cityList>} which will contain the list of cities. This is an example of a city tag:\\
+		\texttt{<city name="city1" x="coordx" y="coordy" color="color1" radius="radius1"/>}\\
+		The cities should be printed in descending asciibetical order of the names according to
+		java.lang.String.compareTo().
+	\end{quote}
+
+   	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		noCitiesExistInRange
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="rangeCities"/>
+	    <parameters>
+	        <x value="1"/>
+	        <y value="1"/>
+	        <radius value="100"/>
+	    </parameters>
+	    <output>
+	        <cityList>
+	            <city name="Derwood" x="20" y="30" color="red" radius="12"/>
+	            <city name="Annapolis" x="20" y="40" color="blue" radius="23"/>
+	        </cityList>
+	    </output>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+	
+%%%%%% Change 6/3/2015      descending order tie breaker
+
+	\item[\textbf{nearestCity}] 
+	Will return the name and location of the
+  	closest city \emph{in the spatial map} to the specified point in space. To do this correctly,
+  	you may want to use an algorithm using a \emph{PriorityQueue}, such as 
+\htmladdnormallink{www.cs.umd.edu/users/meesh/cmsc420/Notes/neighbornotes/incnear.pdf}{http://www.cs.umd.edu/users/meesh/cmsc420/Notes/neighbornotes/incnear.pdf}
+or
+
+\htmladdnormallink{www.cs.umd.edu/users/meesh/cmsc420/Notes/neighbornotes/incnear2.pdf}{http://www.cs.umd.edu/users/meesh/cmsc420/Notes/neighbornotes/incnear2.pdf}--otherwise, you
+  	might not be fast enough. If two or more cities are
+        equidistant from the specified point in space, then output the
+        city with  the larger name in asciibetical order. That is, if
+        city  \texttt{dark1}  and city \texttt{duck1}  are the same
+        distance from the specified point, then  the \texttt{duck1}
+        would be given as the nearest city. \\\\
+  	\texttt{Parameters (In output order):}
+	\begin{quote}
+		x\\
+		y
+	\end{quote}
+	\texttt{Possible \emph{<output>}:}
+	\begin{quote}
+		The \emph{output} will contain one \emph{city} tag which is the nearest city. This is an example of a city tag:\\
+		\texttt{<city name="city1" x="coordx" y="coordy" color="color1" radius="radius1"/>}
+	\end{quote}
+   	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		mapIsEmpty
+	\end{quote}
+	\texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+	<success>
+	    <command name="nearestCity"/>
+	    <parameters>
+	        <x value="1"/>
+	        <y value="2"/>
+	    </parameters>
+	    <output>
+	        <city name="Annapolis" x="20" y="30" color="red" radius="12"/>
+	    </output>
+	</success>
+	\end{verbatim}
+	\end{quote}
+
+
+	\item[\textbf{printAvlTree}]
+
+	Prints the AVL Tree.
+  
+	\texttt{Parameter:}
+	
+  \begin{quote}
+		\emph{(none)}
+	\end{quote}
+	
+  \texttt{Possible \emph{<output>}:}
+	\begin{quote}
+	An \texttt{<AvlGTree>} node will be contained within the \texttt{output} tag and is the root of the AVL-g xml tree. This tag has three required attributes: \texttt{cardinality}, whose value should be the size (number of keys) contained in the tree; \texttt{height}, or the number of levels in the tree (a tree with levels $0$ to $w-1$ has height $w-1$); and \texttt{maxImbalance}, the maximum height difference between a node's left and right subtrees (in other words, $g$). For part 1, $g$ should always be equal to 1.
+
+\end{quote}
+		
+	\begin{Description}
+  
+  \item[\texttt{<node>}]
+  Represents a node in the AVL-g tree. This element has two attributes, name and radius, which define the name and radius of the city contained in the AVL Tree. The first child of a node should be the left child of that node, and the second child of a node should be the right child of that node.
+  
+	\item[\texttt{<emptyChild>}]
+  Represents an empty subtree. This element has no attributes. 
+
+  \end{Description}
+	
+	\texttt{Possible \emph{<error>} types:}
+	\begin{quote}
+		emptyTree
+	\end{quote}
+	
+  \texttt{\emph{<success>} Example:}
+	\begin{quote}
+	\begin{verbatim}
+  <success>
+    <command name="printAvlTree"/>
+    <parameters/>
+    <output>
+      <AvlGTree cardinality="1" height="0" maxImbalance="1">
+        <node name="Baltimore" radius="4">
+          <emptyChild/>
+          <emptyChild/>
+        </node>
+      </AvlGTree>
+    </output>
+  </success>
+	\end{verbatim}
+	\end{quote}
+
+\end{Description}
+\end{Description}
+
+
+The  the XML specification  appears in
+\htmladdnormallink{www.cs.umd.edu/users/meesh/cmsc420/ProjectBook/part1/part1in.xsd}{http://www.cs.umd.edu/users/meesh/cmsc420/ProjectBook/part1/part1in.xsd}.
+Do note: except for one set of tests per project,
+we will provide  syntactically error-free XML, which means
+that we will only test your error checking on one set of test inputs.
+However, we will check the syntactic validity of \emph{every} output
+file produced from  your code.
+
+\section{General Policies}
+
+
+We will be using the latest version of the
+ submit server to test your project 
+\htmladdnormallink{submit.cs.umd.edu}{http://submit.cs.umd.edu/}. We provide
+no further information regarding submission here, unless  a paragraph
+or two is written by someone who has a clue what should go here.
+
+There may be a few points for secret tests or extra credit tests; or, there may not. We have given you basic
+I/O files and any further testing is your problem. However, students
+are encouraged to produce test files and help each other (and us)
+validate tests prior to final submission. That is, should you produce a test input file, we will be glad to generate a correct output file from our canonical solutions. So, please feel free to generate all the test files you'd like, because you will get feedback.
+
+\subsection{Grading Your Project}
+Projects will be graded on a point system, whereby points will be
+awarded for each test successfully passed, and the test results for
+a given structure will be scaled according to the point breakdown
+given in the spec and the relative part weights given in the syllabus.
+As you will soon see when
+you begin implementing your first data structure, we will only ask
+that you implement a fraction of the functionality described by the
+Java API for the interfaces we are going to ask you to implement.
+
+However, we strongly believe in rewarding students who go above and
+beyond the requirements of a project, and occasionally  a few points
+may be awarded for exceeding the project specifications by
+running  extra credit tests on your project.
+Don't get too excited---extra credit will not be massive, and will boost your
+project grade just a bit.  It's meant more as a means to identify students
+who are making remarkable progress  on the project or to provide those who lost
+points on an earlier project part with an opportunity for redemption.
+However, in general, not all students will be able to complete all
+parts of the project on time. So, please, don't be too ashamed to submit
+code that only provides partial functionality.
+We recognize that different students have
+ have varying
+levels of programming and educational experience; so it is not
+necessary to get 100\% of all available project points to do well
+in the course. But, if you find yourself never passing more than half
+of the tests, you should  visit Dr.~Hugue (even by email) or the
+teaching assistant of your choice and ask for help.
+
+
+
+\subsubsection{Criteria for Submission}
+
+Your file must  satisfy the following criteria in order to be
+accepted:
+
+  
+  \begin{itemize}
+    \item It must be a  tar or jar file.
+    \item It must have the extension ".tar" or ".jar"
+    \item It  must have
+    the main function in a class called ``MeeshQuest'', which  be placed in the package ``cmsc420.meeshquest.part1''.
+    \item 	It must contain  a README file to document any references, or implementation notes of interest. 
+    \item 	 It must NOT contain any files with extension \texttt{class} or \texttt{jar}.
+  \item It must compile successfully with the command:
+
+\begin{quote}
+\begin{verbatim}
+javac -classpath xml.jar MeeshQuest.java
+\end{verbatim}
+\end{quote}
+
+Although you are welcomed to use your own \texttt{xml.jar} file
+when developing your code, your code must compile successfully with
+\texttt{cmsc420util.jar} to be graded. That is, no custom jar files
+are acceptable, or needed.
+
+ \item It must pass the primary input
+ (or some subset thereof). Currently,   the primary tests correspond
+ to  the public tests on
+ the submit server. 
+\item  There are no private tests per se--merely public and release tests for part1. This may change without notice. However, for part1, the private tests must be extra credit once the specification is frozen. 
+  \end{itemize}
+
+\subsubsection{README file Contents}
+
+Your README file must contain the following information:
+\begin{itemize}
+  \item your name
+  \item your login id
+  \item citations of sources you used, including documentation of all
+        portions of the code that were borrowed or adapted  or
+        otherwise not written from scratch by you.
+  \item  any additional information you think might be
+        relevant--including documentation of non-working parts of the
+        project--this can be useful later when you've forgotten what
+        works or doesn't.
+\end{itemize}
+
+
+If you leave out the \texttt{README} your project will fail to submit!
+
+\subsubsection{Project Testing and Analysis}
+
+Your program will be tested using the command:
+\begin{quote}
+\texttt{java} -\texttt{classpath} \texttt{xml}.\texttt{jar} \texttt{:.} \texttt{MeeshQuest}\texttt{<}
+\texttt{primary}.\texttt{input} \texttt{>} \texttt{primary}.\texttt{output}
+\end{quote}
+
+We will then check that your output is correct.
+You are responsible for matching the \emph{letter} \emph{of}
+\emph{the} \emph{specification}, which is why we freeze a week before
+the project is due. If you find a discrepancy between the supplied
+Primary I/O and the specification, please report it immediately so
+that the Primary can be corrected, and any remaining ambiguities can
+be clarified. Remember, we have to return points if your output
+matches the specification and we don't. And, helping us keep the
+primary correct will benefit us all in the long run.
+
+
+
+\subsection{Grading}
+
+There will be several methods used  to grade your projects.  Your projects
+will be graded by running them on a number of test files with
+pre-generated correct
+ (we hope) output.  Your output will
+have all punctuation, blank lines, and non-newline whitespace stripped
+before diffing similarly cleaned files.
+
+
+Some of your data structures may be included with the TAs own testing
+code to test their efficiency and correctness.
+
+Some text output cannot always be graded by simply diffing because
+there is no guarantee that we will have the same output.  In these
+cases your project's output will be pre-processed.  In the case of the
+B+  tree, for instance, this program will verify that each node has the
+correct number of keys, that they are correctly ordered, and that all
+the correct data is at the leaves (and any other rules I may have left
+out).
+
+Thanks to the miracle of automation you should expect your projects to
+be run on very very large inputs.
+
+\subsubsection{Testing Process Details}
+
+
+Each part of your project will be subjected to  a variety of
+ tests with points assigned based  on the importance of the
+structure to the project, and the relative difficulty of
+producing working code. Note that we will do our best to assure
+ partial credit where possible by decoupling independent tests. 
+
+
+Evaluation of your  project  may include, but is not limited to,  the
+following testing procedures:
+
+\begin{itemize}
+
+  \item Basic I/O:  when the structure is deterministic, the  test outputs are processed using a
+              a special ``XML diff'' that parses your
+       output into a DOC (just
+like your program does) and then compares it with a valid output.
+       Thus,
+you can put whitespace wherever you want it, and order attributes
+       within tags
+however you like.  However, your output MUST be syntactically valid
+       XML.  IF
+WE CANNOT PARSE YOUR OUTPUT, THEN IT WILL FAIL THE TEST IMMEDIATELY.
+
+\item Rule-Based: when multiple correct answers, we will use
+       code-based verification  that your results  satisfy the
+       required properties.
+ \item Interface: when you are required to implement an interface, we
+       will use our test drivers to execute your code. (Not for Part~1)
+ \item Stress and Timing: used to verify that your algorithms meet the
+       required asymptotic complexity bounds.
+\end{itemize}
+
+\subsubsection{Small, Yet Costly, Errors}
+In general, your project will either completely pass each test, or
+completely
+fail it.  In particular, the following ``small'' mistakes have been
+known to
+fail projects completely in many tests:
+
+\begin{itemize}
+  \item Forgetting to match each ``open'' XML tag (e.g. <\texttt{<tree>}>) with
+        a ``close'' XML
+tag (eg. \texttt{</tree>})
+  \item Forgetting to include the \texttt{/} at the end of single tags
+        (eg. \texttt{<success />})
+  \item Sloppy capitalization (eg. \texttt{<Success/>})
+
+  \item Misspellings     (eg. \texttt{<success/>} or \texttt{<success
+        command = ``creatCity''>}  \ldots.
+\end{itemize}
+
+
+
+On rare occasions,  the tests may be extended to allow minor errors to
+ pass, but only  if we find  that the  cost of that error is
+ significant and unfair. However, in   the large, you'd do better to
+ get this stuff right the first time, than expect partial credit.
+
+
+
+The tests will try to test mutually exclusive components of your
+projects independently.  However, if you don't have a dictionary which
+at least correctly stores all points, and some `get lost', you may
+still end up failing other tests since they all require a working
+dictionary.  This does not reflect double jeopardy on the part of the
+test data, since it is always possible to use some other structure
+(such as the Java \texttt{TreeMap}) for the data dictionary, and
+receive points for portions of the tests that merely reference the
+data in the dictionary. Do not hesitate to ask   for suggestions as to
+how to work around missing project functionality.
+
+\subsection{Standard Disclaimer: Right to Fail (twice for emphasis!)}
+
+As with most programming courses, the instructor reserves the right to
+fail any student who does not make a good faith effort to complete the
+project.
+
+If you have problems with completing any given part of the project
+please talk to Dr. Hugue immediately---do not put it off!  While some
+may enjoy failing students, Dr. Hugue does not; so please be kind and
+do the project, or ask for advice immediately if you find yourself
+unable to submit the first two parts of the project in a timely
+manner.  A submission that gets only 20 or 30 points is considerably
+better for you than no submission at all.  And, we employ  the buddy
+system. If you are still lost after adopting the Pqrt~1 canonical to start Part~2, please ask for
+help. Recognizing when you need help and being willing to as for it
+is often a sign of maturity.
+
+
+\subsection{Integrity Policy}
+
+Your work is expected to be your own or to be labeled with its source,
+whether book or human or web page.  Discussion of all parts of the
+project is permitted and encouraged, including diagrams and flow
+charts.  However, pseudocode writing together is discouraged because
+it's too close to writing the code together for anyone to be able to
+tell the difference.
+
+Since the projects are interrelated, and double jeopardy is not our
+goal, we have a very liberal code use and reuse policy.
+
+\begin{itemize}
+
+\item In general, any resources that are accessed in producing your
+  code should be documented within the code and in a \texttt{README}
+  file that should be included in each submission of your project.
+
+\item First and foremost, use of code produced by anyone who is taking
+  or has ever taken CMSC 420 from Dr.~ Hugue requires email from
+  provider and user to be sent to Dr.~Hugue.  That means that any
+  student who wants to share portions of an earlier part of the
+  project with anyone must inform Dr.~Hugue and receive approval for
+  code sharing prior to releasing or receiving said code. This also
+  applies to sharing code from another course with a friend. Please,
+  please, ask. 
+
+
+\item Second, since we recognize that the ability to modify code
+  written by others is an essential skill for a computer scientist,
+  and that no student should be forced to share code, we will make
+  working versions of critical portions of the project available to
+  all students once grading of each part is completed, or even before,
+  when possible.
+
+\item Dr.~Hugue is the sole arbiter of code use and reuse and reserves
+  the right to fail any student who does not make a good faith effort
+  on the project.  Violators of the policies stated herein will be
+  referred to the Honor Council.
+
+\end{itemize}
+
+Remember, it is better to ask and feel silly than not to ask and
+receive a complimentary F or XF.
+
+\subsubsection{Code Sharing Policy}
+
+During the semester we may provide you with working solutions to
+complete portions of the project.  It is legal to look at these
+solutions, adopt pieces of them, and replace any part of your project
+with anything from them so long as you indicate that you
+\emph{accessed} this code in your \texttt{README}.
+
+Furthermore, any portion of your code that contains any portion of the
+distributed work should contain identifying information in the
+comments.  That is, indicate the  source or inspiration of  your code 
+ in the file where it was used, as well as in your README\@.   It is a good idea to wrap shared
+code with comments such as ``\texttt{Start shared code from source
+  XYZ}'' and ``\texttt{End shared code from source XYZ.}'' You may
+also use comments such as ``\texttt{Parts of this function/file were
+  based on code from source XYZ.}''  You cannot err by including this
+information too often. Making it easy for us to find, makes it easy
+for us to recognize your compliance with the  rules.
+
+Failure to properly document use of distributed code in your project
+could result in a violation of the honor code.  Indicate the
+distribution solution(s) on which your code is based.
+
+\begin{thebibliography}{99}
+
+\bibitem{designp}
+E.~Gamma, R.~Helm, R.~Johnson, and J.~Vlissides.
+\newblock {\em Design Patterns: elements of reusable object-oriented software}.
+\newblock Addison-Wesley, One Jacob Way, Reading, MA 01867, USA, 1995.
+
+\end{thebibliography}
+
+
+
+\appendix
+\section{General notes on Java}
+
+This is the last semester that
+we will  assume merely a minimal understanding of the Java language, so
+don't fret that your less-than-expert knowledge of Java will preclude
+your passing the course, much less excelling in it.  We will provide
+detailed explanations of the Java concepts and constructs to be used
+throughout the semester, and you should be extremely comfortable in
+Java by semester's end.  The syntax of Java is very similar to C++,
+but there are a few important distinctions to be aware of before
+jumping into data structure development with both feet.
+
+\subsection{IDEs}
+
+We \textbf{strongly} encourage you to use an IDE to develop your
+project code.  Although you could develop this project using only
+Emacs and a Java compiler and virtual machine, it is in your best
+interest to use an integrated development environment (IDE).  An IDE
+allows you to write, compile, test, debug, and run your program
+without having to go to the command line (or a shell in Emacs).  A
+good IDE is one that helps you find compilation errors and allows you
+to debug your program by stepping through it line-by-line while
+displaying a print out of all local variables.
+
+Many Java IDEs are available.  Try out a few, and find out that works
+for you.  Some potential IDEs include but are not limited to:
+
+\begin{itemize}
+\item Eclipse [\htmladdnormallink{www.eclipse.org}{http://www.eclipse.org/}]
+\item JCreator [\htmladdnormallink{www.jcreator.com}{http://www.jcreator.com}]
+\item Dr. Java [\htmladdnormallink{drjava.sourceforge.net}{http://drjava.sourceforge.net/}]
+\item jbuilder [\htmladdnormallink{www.borland.com/jbuilder}{http://www.borland.com/jbuilder/}] (free but registration required)
+\item NetBeans [\htmladdnormallink{wwws.sun.com/software/sundev/jde}{http://wwws.sun.com/software/sundev/jde/}]
+\item SunOne [\htmladdnormallink{www.sun.com/sunone}{http://www.sun.com/sunone/}] (Community Edition is a free download from Sun)
+\end{itemize}
+
+Do a Google search to find the URLs to download these IDEs or look for
+them on the WAM machines (I have no idea which of these are installed
+on the UMD networks, other than Eclipse and Dr. Java).  If you find
+another IDE which you like, post it to the Discussion Board to earn
+class participation points and allow others to share in your wisdom at
+the same time. Note that Eclipse is installed on the grace cluster,
+which is where your code will be submitted.
+
+
+
+\subsection{Pass by reference, but not really}
+
+Every semester a new group of students gets caught up by the same
+thing in Java.  They start out hearing ``Java is always pass by
+reference,'' and they do silly looking things like the following:
+\begin{quote}
+\begin{verbatim}
+void foo(String t) { t = new String("World"); }
+
+String s = new String("Hello"); foo(s);
+
+System.out.print(s); //prints "Hello".  Why didn't it change?
+\end{verbatim}
+\end{quote}
+
+In true pass by reference C++ this would have worked.  But what is
+happening is not really pass by reference; it is pass by value, except
+what is being passed is a pointer.  If you were to transfer the above
+to C++ it would look like
+\begin{quote}
+\begin{verbatim}
+void foo(String *t) { t = new String("World"); }
+
+String *s = new String("Hello"); foo(s);
+
+cout<<*s<<endl; //prints "Hello".  Hopefully obvious why
+\end{verbatim}
+\end{quote}
+
+You can see in the second example that \texttt{t} is only a local copy
+of \texttt{s}.  If you alter the value \texttt{t} is pointing at then
+\texttt{s} will see the change.  However, if you point \texttt{t} at
+something else, \texttt{s} will never know.  In this example there is
+actually no way for \texttt{foo} to change \texttt{s}, since Java
+\texttt{String}s are immutable after creation.  An error less obvious
+than the above is
+\begin{quote}
+\begin{verbatim}
+void foo(String t) { t = t+"World"; }
+\end{verbatim}
+\end{quote}
+
+This looks like concatenation, not reallocation, but that `\texttt{+}'
+operator actually allocates a new \texttt{String}.  The above is
+actually just a shortcut in Java for
+\begin{quote}
+\begin{verbatim}
+void foo(String t) {
+    StringBuilder temp = new StringBuilder();
+    temp.append(t);
+    temp.append("World");
+    t = temp.toString();
+}
+\end{verbatim}
+\end{quote}
+
+It's important to realize what's going on in the background!  Of
+course in the above example, \texttt{foo} still doesn't change
+\texttt{t}, but what you could do instead is
+\begin{quote}
+\begin{verbatim}
+void foo(StringBuilder t) { t.append("World"); }
+\end{verbatim}
+\end{quote}
+
+This time, since \texttt{t} always points to the same location, the
+original value really is modified.  In Java, ``pass by reference'' as
+C++ programmers tend to think of it always requires some kind of
+wrapper.  In the last example, \texttt{StringBuilder} is a wrapper for
+a dynamically sized character tabular.  There is a quick and dirty
+hack to get a similar effect without building an entire class wrapper;
+pass a 1 element tabular instead:
+\begin{quote}
+\begin{verbatim}
+void foo(String[] t) { t[0] = new String("World"); }
+
+String s[] = new String[1];
+s[0] = new String("Hello");
+foo(s); //s[0]= "World"
+\end{verbatim}
+\end{quote}
+
+This works for a similar reason.  \texttt{t} points to the same
+tabular in memory that \texttt{s} does.  When an element of the
+tabular is updated by \texttt{t}, \texttt{s} will see the change as
+well.  This ends my FYI on pass by reference; try not to get caught up
+by this common error :)
+
+\subsection{A few notes about Java's object oriented design}
+
+In C++, inheritance and polymorphism could be considered practically
+an afterthought by comparison to languages like Java and C\# which
+were designed as object oriented from the ground up.  In Java, you
+never write programs; you write classes (objects).  It's not possible
+to write a function that is not encapsulated as part of a class---in
+other words, all ``functions'' in Java are more appropriately methods.
+Writing Java code that isn't written with careful attention to its
+design as an object is a crime against the language; no more should
+you write C style code in Java than you should write Lisp style code
+in C.  It's sufficient to remember that when you're writing Java code,
+you're writing OO code.  Don't forget that.  Following is a brief
+outline of a few of Java's OO features that differ from C++.
+
+In C++, to inherit from any other class, the syntax looks like this:
+\begin{quote}
+\begin{verbatim}
+class Foo : Parent1, Parent2 { ... };
+\end{verbatim}
+\end{quote}
+
+In Java, the colon is subsumed by the keyword \textbf{extends}.  Also
+note that every class-level and package-level declaration requires an
+access modifier, so an entire Java class must be marked as being
+either \texttt{public}, \texttt{protected}, or \texttt{private}.  So
+in Java, the syntax for inheritance looks like this:
+\begin{quote}
+\begin{verbatim}
+public class Foo extends Parent1 { ... }
+\end{verbatim}
+\end{quote}
+
+Java does not allow multiple inheritance in this manner.  Every class
+(except \texttt{Object}) has exactly one parent.  If a class is not
+defined to explicitly extend some other class, by default it extends
+\texttt{Object}.  Every class you write in Java will extend
+\texttt{Object}.  Clearly \texttt{Object} is the only class in the
+Java language that does not have a parent class.
+
+However, Java does allow multiple inheritance, but that inheritance is
+restricted.  Java introduces the concept of interfaces.  An interface
+could be defined as being a class which may contain only public
+abstract methods and static fields of any kind.  (In Java,
+``abstract'' means the same thing as ``pure virtual'' in C++ speak;
+``static'' means the same thing as in C++).  A class is free to
+inherit from as many interfaces as it wants, however a different
+keyword is used when describing inheritance from an interface:
+\begin{quote}
+\begin{verbatim}
+class Foo extends Bar implements Interface1, Interface2 { ... }
+class Foo implements Interface1 { ... }
+\end{verbatim}
+\end{quote}
+
+Note that in Java all methods (except static methods) are virtual.  This
+has two consequences: the first is that you are not required to qualify
+your methods as ``virtual'' and the second is that you cannot deliberately
+make a method non-virtual.  Static methods are not virtual but they also
+behave differently and have added restrictions (for instance, you cannot
+refer to the class's fields inside a static method since the magic ``this''
+pointer does not exist in static methods), so don't use static methods
+expressly to prevent a method from being treated as virtual.  (In case you
+are rusty on your OO slang, a virtual method in C++ is one whereby if you
+assign a child class to a parent class pointer and invoke an inherited
+method on that pointer, the child's method will be executed.  A more
+eloquent description, which uses even more OO jargon, would be to say that
+a virtual method is invoked based on a variable's actual type irrespective
+of its declared type).
+
+In Java, methods can be explicitly marked as being ``pure virtual'' (in C++,
+a pure virtual method is a virtual method that doesn't have a body).
+However, recall that in Java the term for ``pure virtual'' is instead
+``abstract''.  If you wish to declare a method ``abstract'', do so like this:
+\begin{quote}
+\begin{verbatim}
+public abstract void foo();
+\end{verbatim}
+\end{quote}
+
+If a class contains a single abstract method, the class itself must also be
+marked abstract.  Abstract classes are not allowed to be instantiated
+(i.e., their constructors are not allowed to be invoked).  Abstract classes
+are still allowed to have constructors since their non-abstract child
+classes might wish to invoke the parent constructor from within their own
+constructors.  To mark a class abstract:
+\begin{quote}
+\begin{verbatim}
+public abstract class Foo { ... }
+\end{verbatim}
+\end{quote}
+
+Although the presence of a single abstract method in the body of the class
+would suggest that the entire class is abstract and therefore marking it
+explicitly is basically unnecessary, no compliant compiler will allow you
+to compile a class that contains an abstract method but is not itself
+declared abstract.
+
+\subsection{\texttt{Comparable}, Comparators, and how Java gets by without
+  overloaded operators}
+
+In C++, you had the opportunity to overload operators for whichever types
+you wanted.  In 214 you may have implemented a templatized binary search
+tree (BST) that worked with the caveat that the provided type had to have
+at least its 'less than' operator overloaded.  This is fine and it works, but
+there's no elegant way for you to enforce this invariant in code---the BST
+would simply break if you passed in a class that didn't have its operator
+properly defined.  Furthermore, suppose your application changes and you
+want to sort your data elements in a different order.  With the stock C++
+approach you'd need to modify the data element's less than operator to
+reflect the change.  But what happens if your application changes again and
+you want to have both of the orderings (forward and reverse) available
+simultaneously?  Have two versions of your data element, with different
+operators?  That probably sounds like a terrible solution because it is.
+Overloaded operators are one feature that many programmers (even those who
+would call themselves OO competent) claim to miss.  But overloaded
+operators actually cause more problems than they solve, and Java's solution
+is actually much more elegant and far more modular.
+
+It is true that not all objects can be compared to one another in any
+meaningful way; some data is simply not sortable.  Some data has many
+different orderings.  Some data has one obvious and universally meaningful
+ordering.  Numbers, for instance, typically have a well understood
+ordering.  Strings, too, have an accepted lexicographical ordering that
+programmers have come to expect.  In Java, objects that have one commonly
+accepted method for comparing themselves against each other are designated
+to implement the \texttt{Comparable} interface.
+
+The \texttt{Comparable} interface contains one method with the
+following signature:
+\begin{quote}
+\begin{verbatim}
+public int compareTo(Object obj);
+\end{verbatim}
+\end{quote}
+
+Note the return type.  The API specifies that the \texttt{int} value returned must
+obey three rules: if the parameter is less than this object, return a
+number strictly less than zero ($x < 0$).  If the parameter is equal to this
+object, return exactly 0.  If the parameter is greater than this object,
+return a number strictly greater than zero ($x > 0$).  Objects that implement
+this interface can be compared like this:
+\begin{quote}
+\begin{verbatim}
+public class Foo implements Comparable { ... }
+...
+Foo f1 = new Foo();
+Foo f2 = new Foo();
+int r = f1.compareTo(f2);
+if (r < 0) System.out.println("foo1 < foo2");
+else if (r == 0) System.out.prinltn("foo1 == foo2");
+else System.out.println("foo1 > foo2");
+\end{verbatim}
+\end{quote}
+
+Note that in Java, the \texttt{==} operator is unilaterally used for
+pointer comparison.  The \texttt{==} operator will return true only if
+the two variables refer to \emph{exactly} the same object in memory
+(i.e., they point to the same location).  The most commonly used class
+that implements \texttt{Comparable} is \texttt{String}.  Remember that
+interfaces are types.  The following code segments are legal:
+\begin{quote}
+\begin{verbatim}
+Comparable c = new String();
+if (c instanceof Comparable) System.out.println("tautology");
+int r = ((Comparable)c).compareTo("hello");
+\end{verbatim}
+\end{quote}
+
+Be warned, however, that the object versions of the primitives
+(\texttt{Integer}, \texttt{Float}, \texttt{Double}, \texttt{Long},
+\texttt{Short}, \texttt{Byte}, \texttt{Boolean}) do in fact implement
+the \texttt{Comparable} interface, but they are not
+\texttt{Comparable} to each other---this has to do with precision
+issues.  You can compare a \texttt{Float} against a \texttt{Float},
+but if you try to compare a \texttt{Float} against an
+\texttt{Integer}, a \texttt{ClassCastException} will be thrown.
+
+Objects that implement the \texttt{Comparable} interface can be
+inserted into sorted data structures in the API such as
+\texttt{TreeMap}.
+
+This is fine, but suppose you are given some class for which you lack
+the ability or the privileges to modify its source to make it
+implement the \texttt{Comparable} interface, or you are in the
+situation whereby you wish to impose an alternate ordering to
+preexisting objects.  The \texttt{Comparable} interface does not solve
+the BST problem suggested previously---you would need to modify the
+body of \texttt{String}'s \texttt{compareTo()} method to sort strings
+in reverse asciibetical order.  In this case, you can't modify
+\texttt{String} or \texttt{TreeMap}, so how could you put
+\texttt{String}s into a \texttt{TreeMap} and have them sorted in
+reverse order?  The answer is by introducing a third party object that
+will do the comparison for you.
+
+A \texttt{Comparator} is an independent class which contains one
+method which takes two parameters---these two parameters are the two
+objects being compared.  Where the \texttt{compareTo()} method in
+\texttt{Comparable} always uses the invocation target as one of the
+two objects being compared (i.e., the object on the left of the
+\texttt{.}), a comparator takes both sides of the comparison as
+parameters.  In Java, comparators are defined by the
+\texttt{Comparator} interface, which contains a \texttt{compare}
+method with this signature:
+\begin{quote}
+\begin{verbatim}
+public int compare(Object o1, Object o2);
+\end{verbatim}
+\end{quote}
+
+A typical \texttt{Comparator} class will look like this:
+\begin{quote}
+\begin{verbatim}
+public class MyComparator implements Comparator {
+    public int compare(Object o1, Object o2) {
+        // code to compare o1 against o2 goes here
+    }
+}
+\end{verbatim}
+\end{quote}
+
+Observe that to be as generic as possible, the parameters that the
+\texttt{compare} method takes are both \texttt{Object}s, but typically
+a comparator is designated for a specific type.  Usually the first
+thing the \texttt{compare()} method will do is cast the parameters
+into the target types.  For instance, let's write a comparator for
+\texttt{String}s that imposes reverse ordering:
+\begin{quote}
+\begin{verbatim}
+public class StringReverseComparator implements Comparator {
+    public int compare(Object o1, Object o2) {
+        String s1 = (String)o1;
+        String s2 = (String)o2;
+        int r = s1.compareTo(s2);
+        if (r < 0) return Math.abs(r);
+        else if (r == 0) return 0;
+        else return -r;
+    }
+}
+\end{verbatim}
+\end{quote}
+
+It's easy to see that this code can be reduced: all we're doing is
+swapping the sign of the result of the \texttt{compareTo()} method for
+the two \texttt{String}s.  A better version would be:
+\begin{quote}
+\begin{verbatim}
+public class StringReverseComparator implements Comparator {
+    public int compare(Object o1, Object o2) {
+        String s1 = (String)o1;
+        String s2 = (String)o2;
+        return -s1.compareTo(s2);
+    }
+}
+\end{verbatim}
+\end{quote}
+
+However, to be even more generic, we can observe that this code would
+work for any two objects that implement \texttt{Comparable}.  In fact,
+at a minimum, it would work for any two objects as long as the first
+parameter implements \texttt{Comparable}.  (By work, I mean execute
+without throwing an exception).  Granted, \texttt{o1} and \texttt{o2}
+should probably not just be \texttt{Comparable} but also be the same
+type.  We can check that programmatically, but for brevity's sake
+let's trust the user (cardinal rule in software engineering:
+\emph{never trust the user}).  A still better version:
+\begin{quote}
+\begin{verbatim}
+public class ReverseComparator implements Comparator {
+    public int compare(Object o1, Object o2) {
+        return -((Comparable)o1).compareTo(o2);
+    }
+}
+\end{verbatim}
+\end{quote}
+
+We can still make another improvement.  Here, we are reversing the
+ordering imposed by the \texttt{compareTo()} method only for objects
+that implement \texttt{Comparable}.  But remember the entire reason
+for inventing \texttt{Comparators} in the first place---not all
+objects are comparable!  We might want to reverse an ordering imposed
+by another comparator.  Thus, what we really want to do is compose our
+\texttt{ReverseComparator} out of another comparator.  Consider this
+implementation:
+\begin{quote}
+\begin{verbatim}
+public class ReverseComparator implements Comparator {
+    private Comparator comp;
+    public ReverseComparator() { this(null); }
+    public ReverseComparator(Comparator comp) { this.comp = comp; }
+    public int compare(Object o1, Object o2) {
+        if (comp != null) return -comp.compare(o1,o2);
+        else return -((Comparable)o1).compareTo(o2);
+    }
+}
+\end{verbatim}
+\end{quote}
+
+Now we have a comparator that can handle both situations---if you
+create a \texttt{ReverseComparator} based on some other
+\texttt{Comparator}, the result will be the reversal of that
+comparator's ordering.  Otherwise, if you pass in nothing (or
+\texttt{null}), it will assume that the objects you pass it implement
+\texttt{Comparable}.  (If they don't, a \texttt{ClassCastException}
+will be thrown).
+
+Now that you see how a \texttt{Comparator} is implemented, consider
+how a \texttt{TreeMap} could use one.  Taking a look at the docs for
+\texttt{TreeMap}, you will notice that \texttt{TreeMap} has a
+constructor which takes a \texttt{Comparator} as a parameter.  By
+passing in an instance of our \texttt{ReverseComparator},
+\texttt{TreeMap} will use that comparator whenever it has to make a
+comparison between two objects.  It will use this comparator to figure
+out where in the tree each object belongs.  \texttt{TreeMap} will sort
+a given object \texttt{x} as first in its ordering if, for all other
+objects \texttt{y} in the map, \texttt{comp.compare(x,y) < 0} where
+\texttt{comp} is the comparator passed in to the \texttt{TreeMap} at
+creation time.  Likewise, when searching the \texttt{TreeMap} for a
+given object \texttt{x}, the \texttt{TreeMap} will report a successful
+search if it finds some other object \texttt{y} in the map such that
+\texttt{comp.compare(x,y) == 0}.  You can make \texttt{TreeMap} (or
+any other sorted structure available in Java) do amazing and varied
+things by altering the comparator you pass into it.  For instance, you
+could easily create a ``black hole'' object by passing a
+\texttt{TreeMap} a comparator that never returns 0.  You could add
+objects all day long and it would sort them properly---iterating over
+the objects in the \texttt{Map} would produce the proper ordering.
+But any object you tried to search for would be reported as not
+existing in the tree because the comparator is incapable of returning
+0.  The bulk of your first project will be tricking \texttt{TreeMap}
+into behaving like plenty of other things by playing tricks with the
+\texttt{Comparator}s you pass it. 
+
+\end{document}

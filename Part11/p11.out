@@ -1,0 +1,40 @@
+\BOOKMARK [1][-]{section.1}{Introduction and General Overview}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Warning and Encouragement}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Freezing the Specification}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Giving and Seeking Help\205OK within Reason}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{I/O Format: XML}{section.1}% 5
+\BOOKMARK [2][-]{subsection.1.5}{Disclaimer}{section.1}% 6
+\BOOKMARK [1][-]{section.2}{General notes on Java}{}% 7
+\BOOKMARK [1][-]{section.3}{MeeshQuest Components}{}% 8
+\BOOKMARK [2][-]{subsection.3.1}{Dictionary Data Structure}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.2}{Spatial Data Structure}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.3}{Mediator}{section.3}% 11
+\BOOKMARK [1][-]{section.4}{Roadmap}{}% 12
+\BOOKMARK [1][-]{section.5}{Part 1: Comparators, Treemaps, Cities, MX Quadtrees, Range Searches, and AVL Trees}{}% 13
+\BOOKMARK [2][-]{subsection.5.1}{Data dictionaries and notes about Cities}{section.5}% 14
+\BOOKMARK [2][-]{subsection.5.2}{Drawing a spatial map using CanvasPlus}{section.5}% 15
+\BOOKMARK [2][-]{subsection.5.3}{AVL Tree Requirements}{section.5}% 16
+\BOOKMARK [3][-]{subsubsection.5.3.1}{Borrow an AVL tree\205do NOT code your own}{subsection.5.3}% 17
+\BOOKMARK [3][-]{subsubsection.5.3.2}{AVL tree Validation}{subsection.5.3}% 18
+\BOOKMARK [2][-]{subsection.5.4}{A command interpreter for XML}{section.5}% 19
+\BOOKMARK [3][-]{subsubsection.5.4.1}{Using the provided XML processing code to get a working parser \(updated\)}{subsection.5.4}% 20
+\BOOKMARK [3][-]{subsubsection.5.4.2}{ Outputting XML using DOM}{subsection.5.4}% 21
+\BOOKMARK [3][-]{subsubsection.5.4.3}{ Outputting XML Conventions }{subsection.5.4}% 22
+\BOOKMARK [2][-]{subsection.5.5}{XML command specifications\205Current for Fall 2016}{section.5}% 23
+\BOOKMARK [3][-]{subsubsection.5.5.1}{Commands}{subsection.5.5}% 24
+\BOOKMARK [1][-]{section.6}{General Policies}{}% 25
+\BOOKMARK [2][-]{subsection.6.1}{Grading Your Project}{section.6}% 26
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Criteria for Submission}{subsection.6.1}% 27
+\BOOKMARK [3][-]{subsubsection.6.1.2}{README file Contents}{subsection.6.1}% 28
+\BOOKMARK [3][-]{subsubsection.6.1.3}{Project Testing and Analysis}{subsection.6.1}% 29
+\BOOKMARK [2][-]{subsection.6.2}{Grading}{section.6}% 30
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Testing Process Details}{subsection.6.2}% 31
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Small, Yet Costly, Errors}{subsection.6.2}% 32
+\BOOKMARK [2][-]{subsection.6.3}{Standard Disclaimer: Right to Fail \(twice for emphasis!\)}{section.6}% 33
+\BOOKMARK [2][-]{subsection.6.4}{Integrity Policy}{section.6}% 34
+\BOOKMARK [3][-]{subsubsection.6.4.1}{Code Sharing Policy}{subsection.6.4}% 35
+\BOOKMARK [1][-]{appendix.A}{General notes on Java}{}% 36
+\BOOKMARK [2][-]{subsection.A.1}{IDEs}{appendix.A}% 37
+\BOOKMARK [2][-]{subsection.A.2}{Pass by reference, but not really}{appendix.A}% 38
+\BOOKMARK [2][-]{subsection.A.3}{A few notes about Java's object oriented design}{appendix.A}% 39
+\BOOKMARK [2][-]{subsection.A.4}{Comparable, Comparators, and how Java gets by without overloaded operators}{appendix.A}% 40

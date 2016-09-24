@@ -1,0 +1,40 @@
+\contentsline {section}{\numberline {1}Introduction and General Overview}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Warning and Encouragement}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Freezing the Specification}{4}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Giving and Seeking Help--OK within Reason}{4}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}I/O Format: XML}{5}{subsection.1.4}
+\contentsline {subsection}{\numberline {1.5}Disclaimer}{5}{subsection.1.5}
+\contentsline {section}{\numberline {2}General notes on Java}{5}{section.2}
+\contentsline {section}{\numberline {3}MeeshQuest Components}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Dictionary Data Structure}{6}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Spatial Data Structure}{6}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Mediator}{6}{subsection.3.3}
+\contentsline {section}{\numberline {4}Roadmap}{7}{section.4}
+\contentsline {section}{\numberline {5}Part 1: Comparators, Treemaps, Cities, MX Quadtrees, Range Searches, and AVL Trees}{7}{section.5}
+\contentsline {subsection}{\numberline {5.1}Data dictionaries and notes about Cities}{8}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Drawing a spatial map using CanvasPlus}{9}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}AVL Tree Requirements}{11}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}Borrow an AVL tree--do NOT code your own}{11}{subsubsection.5.3.1}
+\contentsline {subsubsection}{\numberline {5.3.2}AVL tree Validation}{12}{subsubsection.5.3.2}
+\contentsline {subsection}{\numberline {5.4}A command interpreter for XML}{12}{subsection.5.4}
+\contentsline {subsubsection}{\numberline {5.4.1}Using the provided XML processing code to get a working parser (\texttt {updated})}{14}{subsubsection.5.4.1}
+\contentsline {subsubsection}{\numberline {5.4.2} Outputting XML using DOM}{15}{subsubsection.5.4.2}
+\contentsline {subsubsection}{\numberline {5.4.3} Outputting XML Conventions }{16}{subsubsection.5.4.3}
+\contentsline {subsection}{\numberline {5.5}XML command specifications--Current for Fall 2016}{17}{subsection.5.5}
+\contentsline {subsubsection}{\numberline {5.5.1}Commands}{18}{subsubsection.5.5.1}
+\contentsline {section}{\numberline {6}General Policies}{27}{section.6}
+\contentsline {subsection}{\numberline {6.1}Grading Your Project}{27}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Criteria for Submission}{28}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}README file Contents}{28}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Project Testing and Analysis}{29}{subsubsection.6.1.3}
+\contentsline {subsection}{\numberline {6.2}Grading}{29}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Testing Process Details}{29}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Small, Yet Costly, Errors}{30}{subsubsection.6.2.2}
+\contentsline {subsection}{\numberline {6.3}Standard Disclaimer: Right to Fail (twice for emphasis!)}{31}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}Integrity Policy}{31}{subsection.6.4}
+\contentsline {subsubsection}{\numberline {6.4.1}Code Sharing Policy}{32}{subsubsection.6.4.1}
+\contentsline {section}{\numberline {A}General notes on Java}{32}{appendix.A}
+\contentsline {subsection}{\numberline {A.1}IDEs}{32}{subsection.A.1}
+\contentsline {subsection}{\numberline {A.2}Pass by reference, but not really}{33}{subsection.A.2}
+\contentsline {subsection}{\numberline {A.3}A few notes about Java's object oriented design}{34}{subsection.A.3}
+\contentsline {subsection}{\numberline {A.4}\texttt {Comparable}, Comparators, and how Java gets by without overloaded operators}{36}{subsection.A.4}
